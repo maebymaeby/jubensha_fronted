@@ -47,7 +47,7 @@ export default {
         浏览活动: "el-icon-error",
         搜索活动: "el-icon-error",
         // 用户相关
-        用户注册: "el-icon-error",
+        用户注册: "el-icon-success",
         个人信用评分: "el-icon-error",
         个人信息管理: "el-icon-error",
         // 管理员相关
