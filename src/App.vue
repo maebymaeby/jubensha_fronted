@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import topnav from "./components/Global/TopNav.vue";
+  import topnav from "./components/GlobalComponent/TopNav.vue";
 
   export default {
     name: "App",
@@ -23,29 +23,30 @@
 </script>
 
 <style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    min-width: 1200px;
-    overflow: auto;
+  * {
+    margin: 0;
+    padding: 0;
   }
 
-  .app_topnav {
-    position: relative;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    z-index: 2000;
+  ul {
+    list-style: none;
   }
 
-  .app_routerview {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    right: 0px;
+  body {
+    background-size: cover;
+  }
+
+  @media screen and (max-width: 1024px) {
+    html {
+      font-size: 50px !important;
+      /*一定要加!important*/
+    }
+  }
+
+  @media screen and (min-width: 1920px) {
+    html {
+      font-size: 100px !important;
+      /*一定要加!important*/
+    }
   }
 </style>

@@ -1,0 +1,127 @@
+/*基础配置开始*/
+*{
+    margin: 0;
+    padding: 0;
+}
+ul{
+    list-style: none;
+}
+body{
+    background: url(../images/bg.jpg) no-repeat fixed;
+    background-size: cover;
+}
+/*基础配置结束*/
+
+/*适应rem，让浏览器窗口缩小扩大到一定程度根字体大小固定*/
+@media screen and (max-width: 1024px){
+    html{
+        font-size: 50px!important;/*一定要加!important*/
+    }
+}
+@media screen and (min-width: 1920px){
+    html{
+        font-size: 100px!important;/*一定要加!important*/
+    }
+}
+
+/*头部开始*/
+.head{
+    width: 100%;
+    height: .875rem;
+    background-color: rgba(0, 0, 0, .3);
+    line-height: .875rem;
+    position: relative;
+}
+.head .btn-box{
+    position: absolute;
+    right: 3.25rem;
+}
+.head .btn-box button{
+    margin: 0 .0875rem;
+}
+/*头部结束*/
+
+/*中间主体开始*/
+/*从中间向上下两边展开实际上就是两个盒子通过定位一上一下紧挨着，上面的是父盒子，下面的是子盒子，父盒子设置overflow=hidden，子盒子在下面就看不到了
+然后上面的盒子高度从0开始到原先的高度，而下面的上移，将父盒子颜色删除掉，就看上去是从中间展开的效果*/
+.body-container{
+    overflow: hidden;
+    width: 15rem;
+    height: 8.75rem;
+    margin: .125rem auto;
+    border-radius: .0625rem;
+    animation: down 1s linear;
+    position: relative;
+}
+.body-box{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(254, 254, 254, 0.749);
+    left: 0;
+    animation: up 1s linear;
+    
+}
+/*主体动画*/
+@keyframes up {
+    0%{
+        top: 100%;
+    }
+    
+    100%{
+        top: 0;
+    }
+}
+@keyframes down {
+    0%{
+
+        width: 15rem;
+        height: 0;
+    }
+    50%{
+        height: 4.375rem;
+        width: 15rem;
+    }
+    100%{
+        height: 8.75rem;
+        width: 15rem;
+        
+    }
+
+}
+/*中间主体结束*/
+
+/*模态框开始*/
+.input-group{
+    margin: .25rem 0;
+}
+/*登录模态框开始*/
+/*登录模态框结束*/
+/*注册模态框开始*/
+.headImgSpan{
+    font-size: .2rem;
+}
+
+.headImgUpload{
+    position: absolute;
+    width: .875rem;
+    height: .875rem;
+    border-radius: 50%;
+    left: .75rem;
+    top: -0.375rem;
+}
+.headImg{
+    position: absolute;
+    width: .875rem;
+    height: .875rem;
+    border-radius: 50%;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+}
+.a-link{
+    position: relative;
+    left: 4.625rem;
+}
+/*注册模态框结束*/
+/*模态框结束*/

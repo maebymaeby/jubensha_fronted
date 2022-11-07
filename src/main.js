@@ -1,31 +1,25 @@
 import Vue from 'vue'
-import App from './App'
+import App from './App.vue'
 import router from './router'
-import VueMeta from 'vue-meta'
-import VueResource from 'vue-resource'
-import VueClipboard from 'vue-clipboard2'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+//引入flexible插件
+import 'lib-flexible/flexible'
+//引入vue-router
+import VueRouter from 'vue-router'
+//使用vue-router插件
 
-Vue.use(VueMeta)
-Vue.use(VueResource)
-Vue.use(VueClipboard)
-
-import './plugins/axios'
-import store from './store'
-import globalEntity from '@/utils/global.js'
-Vue.prototype.GLOBAL = globalEntity
-
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import 'font-awesome/css/font-awesome.min.css'
-Vue.use(ElementUI)
-
+Vue.use(VueRouter);
+Vue.use(ElementUI);
 Vue.config.productionTip = false
+
 
 new Vue({
   el: '#app',
+  render: h => h(App),
   router,
-  store,
-  // components: { App },   // runtimeCompiler setting 1
-  // template: '<App/>'     // runtimeCompiler setting 2
-  render: h => h(App) // runtimeOnly setting 1
-})
+  //配置全局事件总线
+  beforeCreate() {
+    Vue.prototype.$bus = this
+  }
+}).$mount('#app')

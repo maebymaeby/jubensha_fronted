@@ -1,6 +1,4 @@
-# jubensha_fronted
- A fronted project for MG401130 Software Engineering (Suzhou)
- 
+# jubensha_frontend
 
 ## Project setup
 ```
@@ -21,3 +19,6 @@ npm run build
 ```
 npm run lint
 ```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

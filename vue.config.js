@@ -1,23 +1,16 @@
-const webpack = require("webpack");
-
-module.exports = {
-  // runtimeCompiler: true,
-  configureWebpack: {
-    plugins: [
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        'window.jQuery': 'jquery',
-        Popper: ['popper.js', 'default']
-      })
-    ],
-  },
-  chainWebpack(config) {
-    // 修改htmlWebpackPlugin
-    config.plugin('html').tap(args => {
-      args[0].title = 'Jubensha_Web';
-      return args;
-    })
-  },
-  publicPath: '/',
-}
+const { defineConfig } = require('@vue/cli-service')
+module.exports = defineConfig({
+  publicPath: './',
+  transpileDependencies: true,
+  // 配置代理服务器
+  devServer: {
+    proxy: {
+      '/request': {
+        target: 'http://103.151.217.147:8080',
+        pathRewrite: { '^/request': '' },
+        ws: true,
+        changeOrigin: true
+      },
+    }
+  }
+})

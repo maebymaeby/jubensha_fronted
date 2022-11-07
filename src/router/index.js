@@ -1,67 +1,62 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+//配置路由
+import VueRouter from "vue-router";
 
-Vue.use(Router)
-
-const router = new Router({
-  mode: 'history',
+const Router = new VueRouter({
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes: [
   {
     path: '/',
-    component: () => import('@/views/Data.vue'),
+    component: () => import('@/views/MainView.vue'),
     children: [
       // 首页
       {
         path: '/FrontPage',
-        component: () => import('@/components/Data/FrontPage.vue'),
+        component: () => import('@/components/FrontPage.vue'),
       },
       // 活动相关
       {
+        path: '/ActivityPage',
+        component: () => import('@/components/ActivityComponent/ActivityPage.vue'),
+      },
+      {
+        path: '/CreatePage',
+        component: () => import('@/components/ActivityComponent/CreatePage.vue'),
+      },
+      {
+        path: '/ConcernPage',
+        component: () => import('@/components/ActivityComponent/ConcernPage.vue'),
+      },
+      {
+        path: '/AttendPage',
+        component: () => import('@/components/ActivityComponent/AttendPage.vue'),
+      },
+      {
+        path: '/ActivityInfo',
+        component: () => import('@/components/ActivityComponent/ActivityInfo.vue'),
+      },
+      {
+        path: '/CreateInfo',
+        component: () => import('@/components/ActivityComponent/CreateInfo.vue'),
+      },
+      {
         path: '/CreateActivity',
-        component: () => import('@/components/Data/Activity/CreateActivity.vue'),
-      },
-      {
-        path: '/JoinActivity',
-        component: () => import('@/components/Data/Activity/JoinActivity.vue'),
-      },
-      {
-        path: '/BrowseActivity',
-        component: () => import('@/components/Data/Activity/BrowseActivity.vue'),
-      },
-      {
-        path: '/SearchActivity',
-        component: () => import('@/components/Data/Activity/SearchActivity.vue'),
+        component: () => import('@/components/ActivityComponent/CreateActivity.vue'),
       },
       // 用户相关
       {
-        path: '/UserRegister',
-        component: () => import('@/components/Data/User/UserRegister.vue'),
+        path: '/UserPage',
+        component: () => import('@/components/UserComponent/UserPage.vue'),
       },
       {
-        path: '/UserCredit',
-        component: () => import('@/components/Data/User/UserCredit.vue'),
+        path: '/UserSetting',
+        component: () => import('@/components/UserComponent/UserSetting.vue'),
       },
       {
-        path: '/UserInfo',
-        component: () => import('@/components/Data/User/UserInfo.vue'),
+        path: '/UserVerify',
+        component: () => import('@/components/UserComponent/UserVerify.vue'),
       },
-      //管理员相关
-      {
-        path: '/UserManagement',
-        component: () => import('@/components/Data/Admin/UserManagement.vue'),
-      },
-      {
-        path: '/UserGroup',
-        component: () => import('@/components/Data/Admin/UserGroup.vue'),
-      },
-    ],
-  }, ]
+    ]
+  }],
 })
-
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
-}
-
-export default router
+export default Router
