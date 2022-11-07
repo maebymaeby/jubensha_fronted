@@ -138,8 +138,8 @@
           }
         }).then(response => {
           if (response.data.code == 200) {
-            alert(response.data.msg);
             this.messageVisible = false;
+            alert(response.data.msg);
           }
           else {
             alert(response.data.msg);

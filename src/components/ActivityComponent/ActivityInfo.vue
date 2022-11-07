@@ -5,7 +5,7 @@
       <el-card class="activity_base_card" shadow="never">
         <!--  活动照片  -->
         <el-row class="activity_image">
-          <img class="image_content" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
+          <img class="image_content" :src="title2Photo(this.activityName)">
         </el-row>
         <!--  活动标题  -->
         <el-row class="activity_title">
@@ -17,7 +17,7 @@
         <el-row class="activity_operation">
           <el-col :span=8>
             <el-row v-if="isJoined">
-              <el-button type="primary" @click="exitActivity" icon="el-icon-check" circle style="font-size:22px"></el-button>
+              <el-button type="danger" @click="deleteActivity" icon="el-icon-close" circle style="font-size:22px"></el-button>
             </el-row>
             <el-row v-else>
               <el-row v-if="isWaiting">
@@ -199,17 +199,20 @@
     methods: {
       // 加入活动
       joinActivity() {
-        axios.post(`http://localhost:8080/request/api/users/application`,
-        {
-          activity_id: this.activity_id,
-        },
-        {
-          headers: {
-            token: localStorage.getItem('token')
-          }
-        }).then(response => {
+        let requestData = {
+          "activity_id": this.activity_id,
+        }
+        console.log(requestData);
+        axios.post(`http://localhost:8080/request/api/users/application/`,
+          requestData,
+          {
+            headers: {
+              token: localStorage.getItem('token')
+            }
+          }).then(response => {
           if (response.data.code == 200) {
-            this.isJoined = true;
+            this.isWaiting = true;
+            alert(response.data.msg);
           }
           else {
             alert(response.data.msg);
@@ -231,6 +234,7 @@
           }).then(response => {
             if (response.data.code == 200) {
               alert(response.data.msg);
+              this.$router.go(-1);
             }
             else {
               alert(response.data.msg);
@@ -291,7 +295,9 @@
           }
         }).then(response => {
           if (response.data.code == 200) {
+            this.commentVisible = false;
             alert(response.data.msg);
+            this.getActivityRemark();
           }
         })
       },
@@ -313,7 +319,15 @@
           let activity = response.data.data;
           this.baseInfo[0].content = this.getDatetimeFormat(activity.activity_start_time, "yyyy-MM-dd hh:mm")
           this.baseInfo[1].content = this.getDatetimeFormat(activity.activity_deadline, "yyyy-MM-dd hh:mm");
-          this.baseInfo[2].content = activity.activity_type;
+          if (activity.activity_type == 1) {
+            this.baseInfo[2].content = "线上活动"
+          }
+          else if (activity.activity_type == 2) {
+            this.baseInfo[2].content = "线下活动"
+          }
+          else {
+            this.baseInfo[2].content = activity.activity_type;
+          }
           this.baseInfo[3].content = activity.activity_address;
           this.baseInfo[4].content = activity.script_type;
           this.baseInfo[5].content = activity.activity_explain;
@@ -388,14 +402,14 @@
         }).then(res => {
           if (res.data.code == 200) {
             console.log("我加入的活动：", res)
-            this.attendedList = res.data.activity_attended;
+            this.attendedList = res.data.activity_to_attend;
             for (let i = 0; i < this.attendedList.length; i++) {
               if (this.attendedList[i].ID == this.activity_id) {
                 this.isJoined = true;
                 break;
               }
             }
-            this.toAttendList = res.data.activity_to_attend;
+            this.toAttendList = res.data.waiting;
             for (let i = 0; i < this.toAttendList.length; i++) {
               if (this.toAttendList[i].ID == this.activity_id) {
                 this.isWaiting = true;
@@ -434,6 +448,30 @@
           }
         })
       },
+      // 获取照片
+      title2Photo(title) {
+        if (title[1] == "日") {
+          return require("@/assets/images/日日是好日.jpg");
+        }
+        else if (title[1] == "野") {
+          return require("@/assets/images/野蔷薇.png");
+        }
+        else if (title[1] == "星") {
+          return require("@/assets/images/星落五丈原.png");
+        }
+        else if (title[1] == "爱") {
+          return require("@/assets/images/爱幼妇产科医院.png");
+        }
+        else if (title[1] == "年") {
+          return require("@/assets/images/年轮.png");
+        }
+        else if (title[1] == "来") {
+          return require("@/assets/images/来电.png");
+        }
+        else if (title[1] == "青") {
+          return require("@/assets/images/青楼.png");
+        }
+      },
     },
   };
 </script>
@@ -450,14 +488,14 @@
 
   .activity_image {
     width: 100%;
-    height: 300px;
+    height: 400px;
     overflow: hidden;
   }
 
   .image_content {
     margin: 0 auto;
     width: 100%;
-    height: 300px;
+    height: 400px;
     transition: all 0.5s;
   }
 

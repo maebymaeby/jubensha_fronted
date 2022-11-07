@@ -5,7 +5,7 @@
       <el-card class="activity_base_card" shadow="never">
         <!--  活动照片  -->
         <el-row class="activity_image">
-          <img class="image_content" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
+          <img class="image_content" :src="title2Photo(this.activityName)">
         </el-row>
         <!--  活动标题  -->
         <el-row class="activity_title">
@@ -15,17 +15,12 @@
         <el-divider></el-divider>
         <!--  按钮操作  -->
         <el-row class="activity_operation">
-          <el-col :span=12>
+          <el-col :span=24>
             <el-row>
               <el-tooltip class="item" effect="dark" content="结算活动" placement="bottom">
                 <el-button type="success" @click="completeVisible = true" icon="el-icon-date" circle style="font-size:22px"></el-button>
               </el-tooltip>
             </el-row>
-          </el-col>
-          <el-col :span=12>
-            <el-tooltip class="item" effect="dark" content="评论活动" placement="bottom">
-              <el-button type="info" icon="el-icon-edit" @click="commentVisible = true" circle style="font-size:22px"></el-button>
-            </el-tooltip>
           </el-col>
         </el-row>
       </el-card>
@@ -126,13 +121,6 @@
         </el-col>
       </el-scrollbar>
     </el-col>
-    <el-dialog title="评论活动" :visible.sync="commentVisible" :append-to-body="true" width="500px">
-      <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="commentText"></el-input>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="commentVisible = false">取消</el-button>
-        <el-button type="primary" @click="addComment">确定</el-button>
-      </div>
-    </el-dialog>
     <el-dialog title="结算活动" :visible.sync="completeVisible" :append-to-body="true" width="500px">
       <el-menu :default-active="menuItems[0].index" class="el-menu-demo" mode="horizontal" @select="handleSelect">
         <template v-for="item in menuItems">
@@ -173,7 +161,8 @@
       </el-col>
       <div slot="footer" class="dialog-footer">
         <el-button @click="completeVisible = false">取消</el-button>
-        <el-button type="primary" @click="completeActivity">确定</el-button>
+        <el-button type="primary" @click="completeActivity1" v-if="isAll">确定</el-button>
+        <el-button type="primary" @click="completeActivity" v-else>确定</el-button>
       </div>
     </el-dialog>
   </el-row>
@@ -263,7 +252,6 @@
       this.activity_id = this.$route.query.activity_id;
       this.getActivityDetail();
       this.getActivityUsers();
-      this.getActivityRemark();
       this.getApplyUsers();
     },
     mounted() {},
@@ -290,6 +278,9 @@
           if (response.data.code == 200) {
             alert(response.data.msg);
           }
+          else {
+            alert(response.data.msg);
+          }
         })
       },
       // 结算活动(Each)
@@ -297,7 +288,7 @@
         let data = {};
         for (let i = 0; i < this.userList.length; i++) {
           if (this.userList[i].attend == true) {
-            data[this.userList[i].user] = this.userList[i].username;
+            data[this.userList[i].username] = true;
           }
         }
         axios.post(`http://localhost:8080/request/api/users/manageactivity/`,
@@ -331,43 +322,50 @@
           }
         }
       },
-      // 新增评论
-      addComment() {
-        axios.post(`http://localhost:8080/request/api/users/detial/comment/`,
-        {
-          activity_id: this.activity_id,
-          comment: this.commentText,
-        },
-        {
-          headers: {
-            token: localStorage.getItem('token')
-          }
-        }).then(response => {
-          if (response.data.code == 200) {
-            alert(response.data.msg);
-          }
-        })
-      },
       // 确认申请
       confirmApply(user_id, flag) {
         let data = {
-          activity_id: this.activity_id,
-          user_id: user_id,
-          feedback: flag
+          "activity_id": Number(this.activity_id),
+          "user_id": user_id,
+          "feedback": flag
         }
-        axios.post(`http://localhost:8080/request/api/users/involveActivity`, data,
-        {
-          headers: {
-            token: localStorage.getItem('token')
+        if (flag == true) {
+          if (confirm('是否同意申请?')) {
+            axios.post(`http://localhost:8080/request/api/users/involveActivity/`, data,
+            {
+              headers: {
+                token: localStorage.getItem('token')
+              }
+            }).then(response => {
+              if (response.data.code == 200) {
+                alert(response.data.msg);
+                this.getActivityUsers();
+                this.getApplyUsers();
+              }
+              else {
+                alert(response.data.msg);
+              }
+            })
           }
-        }).then(response => {
-          if (response.data.code == 200) {
-            alert(response.data.msg);
+        }
+        else {
+          if (confirm('是否拒绝申请?')) {
+            axios.post(`http://localhost:8080/request/api/users/involveActivity/`, data,
+            {
+              headers: {
+                token: localStorage.getItem('token')
+              }
+            }).then(response => {
+              if (response.data.code == 200) {
+                alert(response.data.msg);
+                this.getApplyUsers();
+              }
+              else {
+                alert(response.data.msg);
+              }
+            })
           }
-          else {
-            alert(response.data.msg);
-          }
-        })
+        }
       },
       // 跳转指定个人主页
       gotoUserInfo(userID, photo) {
@@ -387,7 +385,15 @@
           let activity = response.data.data;
           this.baseInfo[0].content = this.getDatetimeFormat(activity.activity_start_time, "yyyy-MM-dd hh:mm")
           this.baseInfo[1].content = this.getDatetimeFormat(activity.activity_deadline, "yyyy-MM-dd hh:mm");
-          this.baseInfo[2].content = activity.activity_type;
+          if (activity.activity_type == 1) {
+            this.baseInfo[2].content = "线上活动"
+          }
+          else if (activity.activity_type == 2) {
+            this.baseInfo[2].content = "线下活动"
+          }
+          else {
+            this.baseInfo[2].content = activity.activity_type;
+          }
           this.baseInfo[3].content = activity.activity_address;
           this.baseInfo[4].content = activity.script_type;
           this.baseInfo[5].content = activity.activity_explain;
@@ -431,7 +437,6 @@
           }
         }).then(response => {
           if (response.data.code == 200) {
-            console.log("活动评论：", response)
             this.remarkList = response.data.data;
             for (let i = 0; i < this.remarkList.length; i++) {
               this.remarkList[i].send_time = this.getDatetimeFormat(this.remarkList[i].send_time, "yyyy-MM-dd hh:mm");
@@ -451,9 +456,9 @@
           }
         }).then(response => {
           if (response.data.code == 200) {
-            this.applyList = response.data.data;
+            this.applyList = response.data.reviewing;
             for (let i = 0; i < this.applyList.length; i++) {
-              this.applyList[i].photo = this.getPhotoFormat(this.applyList[i].photo);
+              this.applyList[i].photo = this.getPhotoFormat(this.applyList[i].avater);
             }
           }
         })
@@ -490,6 +495,30 @@
         else if (index == "forEach") {
           this.isAll = false;
           this.isEach = true;
+        }
+      },
+      // 获取照片
+      title2Photo(title) {
+        if (title[1] == "日") {
+          return require("@/assets/images/日日是好日.jpg");
+        }
+        else if (title[1] == "野") {
+          return require("@/assets/images/野蔷薇.png");
+        }
+        else if (title[1] == "星") {
+          return require("@/assets/images/星落五丈原.png");
+        }
+        else if (title[1] == "爱") {
+          return require("@/assets/images/爱幼妇产科医院.png");
+        }
+        else if (title[1] == "年") {
+          return require("@/assets/images/年轮.png");
+        }
+        else if (title[1] == "来") {
+          return require("@/assets/images/来电.png");
+        }
+        else if (title[1] == "青") {
+          return require("@/assets/images/青楼.png");
         }
       },
     }

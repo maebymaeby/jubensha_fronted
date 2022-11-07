@@ -52,8 +52,8 @@
         }).then(res => {
           if (res.data.code == 200) {
             console.log("我的活动：", res)
-            this.attendedList = res.data.activity_attended;
-            this.toAttendList = res.data.activity_to_attend;
+            this.attendedList = res.data.activity_to_attend;
+            this.toAttendList = res.data.waiting;
           }
           else {
             alert(res.data.message);

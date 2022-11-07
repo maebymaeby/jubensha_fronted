@@ -1,7 +1,7 @@
 <template>
   <el-row class="activitypage_framework">
     <el-col :span="24" style="margin-top:20px;margin-left:20px">
-      <span style="font-size:20px"> 已发起的活动</span>
+      <span style="font-size:20px">已发起的活动</span>
     </el-col>
     <el-col class="activity_card" :span="6" v-for="(item,index) in activityList" :key="index">
       <el-row>

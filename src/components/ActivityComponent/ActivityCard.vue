@@ -2,7 +2,7 @@
   <el-row class="activitycard_framework">
     <el-card shadow="never" @click.native="clickEvent()">
       <div class="image_box">
-        <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image_content">
+        <img :src="title2Photo(this.activityData.script_name)" class="image_content">
       </div>
       <!-- 剧本名称 -->
       <div class="info_text" style="margin-top:10px">
@@ -39,7 +39,7 @@
           </div>
           <div class="info_text">
             <p class="info_text_title">{{this.activityInfoList[2].title}}</p>
-            <p class="info_text_content">{{this.activityData.activity_type}}</p>
+            <p class="info_text_content">{{this.changeType()}}</p>
           </div>
         </el-row>
 
@@ -98,6 +98,7 @@
           content: "",
           icon: "el-icon-data-board",
         }],
+        scriptPhoto: "../../assets/images/script1.jpeg",
       };
     },
     created() {},
@@ -124,6 +125,43 @@
             format = format.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
         return format;
       },
+      // 获取照片
+      title2Photo(title) {
+        if (title[1] == "日") {
+          return require("@/assets/images/日日是好日.jpg");
+        }
+        else if (title[1] == "野") {
+          return require("@/assets/images/野蔷薇.png");
+        }
+        else if (title[1] == "星") {
+          return require("@/assets/images/星落五丈原.png");
+        }
+        else if (title[1] == "爱") {
+          return require("@/assets/images/爱幼妇产科医院.png");
+        }
+        else if (title[1] == "年") {
+          return require("@/assets/images/年轮.png");
+        }
+        else if (title[1] == "来") {
+          return require("@/assets/images/来电.png");
+        }
+        else if (title[1] == "青") {
+          return require("@/assets/images/青楼.png");
+        }
+      },
+      changeType() {
+        let res = "";
+        if (this.activityData.activity_type == 1) {
+          res = "线上活动"
+        }
+        else if (this.activityData.activity_type == 2) {
+          res = "线下活动"
+        }
+        else {
+          res = this.activityData.activity_type;
+        }
+        return res
+      }
     },
   };
 </script>
